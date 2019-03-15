@@ -11,17 +11,27 @@
 #define DBTableNAME "storage"
 #define NAMELENGTH 30
 
-QList<QString> values = {
-    "name",         //商品名
-    "costPrice",    //入库单价
-    "itemCount",    //商品数量
-    "sumValue"      //总价
+# pragma execution_character_set("utf-8")
+
+
+QPair<QString, QString> itemValues[] = {
+    {"id", "商品号"},
+    {"name", "商品名"},
+    {"costPrice", "入库单价"},
+    {"itemCount", "商品数量"},
+    {"sumValue", "总价"},
 };
 
 namespace commands
 {
-    QString createTable = QString("create table %1 (id int primary key, %2 varchar(30), %3 int,%4 int, %5 int)")
-        .arg(DBTableNAME, values[0], values[1], values[2], values[3]);
+    QString createTable = QString("create table %1 (%2 int primary key, %3 varchar(30), %4 int,%5 int, %6 int)")
+        .arg(DBTableNAME,
+        itemValues[0].first,
+        itemValues[1].first,
+        itemValues[2].first,
+        itemValues[3].first,
+        itemValues[4].first);
+
     QString selectMaxSql = QString("select max(id) from %1").arg(DBTableNAME);
     QString insertSql = QString("insert into %1 values (?, ?, ?)").arg(DBTableNAME);
     QString updateSql = QString("update %1 set name = :name where id = :id").arg(DBTableNAME);
@@ -30,8 +40,6 @@ namespace commands
     QString deleteSql = QString("delete from %1 where id = ?").arg(DBTableNAME);
     QString clearSql = QString("delete from %1").arg(DBTableNAME);
 };
-
-
 
 QSqlDemo::QSqlDemo(QWidget *parent)
     : QMainWindow(parent)
@@ -43,17 +51,20 @@ QSqlDemo::QSqlDemo(QWidget *parent)
     createTable();
 
     QSqlDatabase db = dataBase(DBCONNECTIONNAME);
-    QSqlTableModel *model = new QSqlTableModel(this, db);
-    model->setTable(DBTableNAME);
-    model->select();
-    ui->tableView->setModel(model);
+    m_model = new QSqlTableModel(this, db);
+    m_model->setTable(DBTableNAME);
+    m_model->select();
+    m_tableView = ui->tableView;
+    m_tableView->setModel(m_model);
 
-    model->setHeaderData(0, Qt::Horizontal, QStringLiteral("商品号"));
-    model->setHeaderData(1, Qt::Horizontal, QStringLiteral("商品名"));
-    model->setHeaderData(2, Qt::Horizontal, QStringLiteral("入库单价"));
-    model->setHeaderData(3, Qt::Horizontal, QStringLiteral("数量"));
-    model->setHeaderData(4, Qt::Horizontal, QStringLiteral("总价"));
 
+    m_model->setHeaderData(0, Qt::Horizontal, itemValues[0].second);
+    m_model->setHeaderData(1, Qt::Horizontal, itemValues[1].second);
+    m_model->setHeaderData(2, Qt::Horizontal, itemValues[2].second);
+    m_model->setHeaderData(3, Qt::Horizontal, itemValues[3].second);
+    m_model->setHeaderData(4, Qt::Horizontal, itemValues[4].second);
+
+    connect(m_model, &QSqlTableModel::dataChanged, this, &QSqlDemo::setSumPrice);
 }
 
 bool QSqlDemo::connectDB()
@@ -139,12 +150,45 @@ QSqlDatabase QSqlDemo::dataBase(QString DBName)
     return QSqlDatabase::database(DBName); //建立数据库连接
 }
 
-
 void QSqlDemo::on_addButton_clicked()
 {
-    auto model = qobject_cast<QSqlTableModel *>(ui->tableView->model());
-    auto record = model->record();
-    int rowCount = model->rowCount();
+    auto record = m_model->record();
+    int rowCount = m_model->rowCount();
     record.setValue(0, rowCount + 1);
-    qDebug() << model->insertRecord(rowCount, record);
+    bool ret = m_model->insertRecord(rowCount, record);
+    qDebug() << "插入失败！" << ret;
+}
+
+void QSqlDemo::on_aboutButton_clicked()
+{
+    QString info = QStringLiteral("    商品号是唯一的，我还没有做输入限制，因此你要确保输入的货号是唯一的否则第二个重复货号的商品信息无法录入。\n");
+    info.append(QStringLiteral("    单价数量总价只能输入数字，若输入其他字符会无法录入，我也没做限制，下次再做。"));
+
+    QMessageBox::information(this, "warning", info);
+}
+
+void QSqlDemo::setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+   // Q_ASSERT_X(topLeft == bottomRight, "SUM_PRICE！", "do not change SUM_PRICE");
+    int costValue, itemCount;
+
+    if (topLeft.column() == 2)
+    {
+        costValue = topLeft.data().toInt();
+        itemCount = topLeft.sibling(topLeft.row(), topLeft.column() + 1).data().toInt();
+    }
+    else if (topLeft.column() == 3)
+    {
+        costValue = topLeft.sibling(topLeft.row(), topLeft.column() - 1).data().toInt();
+        itemCount = topLeft.data().toInt();
+    }
+    else
+    {
+        return;
+    }
+
+    int sumValue = costValue * itemCount;
+    QModelIndex sumIndex = topLeft.sibling(topLeft.row(), ui->tableView->model()->columnCount() - 1);
+
+    m_model->setData(sumIndex, sumValue);
 }
