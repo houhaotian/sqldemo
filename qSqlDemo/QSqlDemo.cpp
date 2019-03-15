@@ -24,7 +24,7 @@ QPair<QString, QString> itemValues[] = {
 
 namespace commands
 {
-    QString createTable = QString("create table %1 (%2 int primary key, %3 varchar(30), %4 int,%5 int, %6 int)")
+    QString createTable = QString("create table %1 (%2 int primary key, %3 varchar(30), %4 REAL, %5 int, %6 REAL)")
         .arg(DBTableNAME,
         itemValues[0].first,
         itemValues[1].first,
@@ -170,16 +170,16 @@ void QSqlDemo::on_aboutButton_clicked()
 void QSqlDemo::setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
    // Q_ASSERT_X(topLeft == bottomRight, "SUM_PRICE！", "do not change SUM_PRICE");
-    int costValue, itemCount;
+    float costValue, itemCount;
 
     if (topLeft.column() == 2)
     {
-        costValue = topLeft.data().toInt();
+        costValue = topLeft.data().toFloat();
         itemCount = topLeft.sibling(topLeft.row(), topLeft.column() + 1).data().toInt();
     }
     else if (topLeft.column() == 3)
     {
-        costValue = topLeft.sibling(topLeft.row(), topLeft.column() - 1).data().toInt();
+        costValue = topLeft.sibling(topLeft.row(), topLeft.column() - 1).data().toFloat();
         itemCount = topLeft.data().toInt();
     }
     else
@@ -187,7 +187,7 @@ void QSqlDemo::setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottom
         return;
     }
 
-    int sumValue = costValue * itemCount;
+    float sumValue = costValue * itemCount;
     QModelIndex sumIndex = topLeft.sibling(topLeft.row(), ui->tableView->model()->columnCount() - 1);
 
     m_model->setData(sumIndex, sumValue);
