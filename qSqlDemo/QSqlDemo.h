@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_QSqlDemo.h"
+#include <QSqlDatabase>
 
 class QSqlDemo : public QMainWindow
 {
@@ -12,6 +13,14 @@ public:
 
     bool connectDB();
     bool createTable();
+
+    bool insertTest(char *name, int age);
+
+private slots:
+    void on_addButton_clicked();
+
+private:
+    QSqlDatabase dataBase(QString DBName);
 
 private:
     Ui::QSqlDemoClass *ui;
