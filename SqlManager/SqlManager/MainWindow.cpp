@@ -17,3 +17,6 @@ void MainWindow::on_insertButton_clicked()
     inputTable->insertIndex();
 }
 
+void MainWindow::on_deleteButton_clicked()
+{
+}
