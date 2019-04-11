@@ -17,6 +17,9 @@ public:
 public slots:
     bool insertIndex();
 
+    bool removeIndex();
+
+
 private:
     Ui::InputTable *ui;
     QTableView *m_tableView;

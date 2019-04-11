@@ -6,7 +6,9 @@
 #include <QSqlTableModel>
 #include <QTableView>
 #include <QSqlRecord>
+#include <QDateTime>
 
+#include <QDebug>
 
 #define INPUTTABLENAME "InputStorage"
 #pragma execution_character_set("utf-8")
@@ -17,20 +19,22 @@ QList<QPair<QString, QString>> itemValues = {
     {"costPrice", "入库单价"},
     {"count", "商品数量"},
     {"sumValue", "总价"},
-    {"note", "备注"}
+    {"note", "备注"},
+    {"dateTime", "日期"}
 };
 
 namespace INPUT_COMMANDS
 {
      QString createTable = QString("create table %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        %2 int, %3 varchar(30), %4 REAL, %5 int, %6 REAL, %7 TEXT)")
+        %2 int, %3 varchar(30), %4 REAL, %5 int, %6 REAL, %7 TEXT, %8 DATETIME)")
         .arg(INPUTTABLENAME,
             itemValues[0].first,
             itemValues[1].first,
             itemValues[2].first,
             itemValues[3].first,
             itemValues[4].first,
-            itemValues[5].first);
+            itemValues[5].first,
+            itemValues[6].first);
 };
 
 InputTable::InputTable(QWidget *parent)
@@ -77,5 +81,15 @@ bool InputTable::insertIndex()
     auto record = m_model->record();
     int rowCount = m_model->rowCount();
     record.setValue(0, rowCount + 1);
+    record.setValue(7, QDateTime::currentDateTime().toString(QString("yyyy/M/d H:mm:ss")));
+
     return m_model->insertRecord(rowCount, record);
+}
+
+bool InputTable::removeIndex()
+{
+    QModelIndex currentIndex = m_tableView->currentIndex();
+    m_model->removeRow(currentIndex.row());
+    m_model->select();
+    return true;
 }

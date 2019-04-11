@@ -19,4 +19,5 @@ void MainWindow::on_insertButton_clicked()
 
 void MainWindow::on_deleteButton_clicked()
 {
+    inputTable->removeIndex();
 }
