@@ -3,7 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_MainWindow.h"
 
-class InputTable;
+class DBTable;
 
 class MainWindow : public QMainWindow
 {
@@ -13,11 +13,9 @@ public:
     MainWindow(QWidget *parent = Q_NULLPTR);
 
 private slots:
-    void on_insertButton_clicked();
-    void on_deleteButton_clicked();
 
 private:
     Ui::MainWindow *ui;
 
-    InputTable *inputTable;
+    DBTable *m_inputTable, *m_outputTable;
 };

@@ -13,17 +13,6 @@
 #define NAMELENGTH 30
 
 
-
-QPair<QString, QString> itemValues[] = {
-    {"id", "商品号"},
-    {"name", "商品名"},
-    {"costPrice", "入库单价"},
-    {"itemCount", "商品数量"},
-    {"sumValue", "总价"},
-    {"note","备注"}
-};
-
-
 namespace commands
 {
     QString selectMaxSql = QString("select max(id) from %1");
@@ -35,27 +24,17 @@ namespace commands
     QString clearSql = QString("delete from %1");
 };
 
-//DBManager::DBManager(QWidget *parent)
-//{
-    //connectDB();
-    //createTable();
+QSqlDatabase DBManager::mainDB;
 
-    //QSqlDatabase db = dataBase(DBCONNECTIONNAME);
-    //m_model = new QSqlTableModel(this, db);
-    //m_model->setTable(DBTableNAME);
-    //m_model->select();
-    //m_tableView = ui->tableView;
-    //m_tableView->setModel(m_model);
+QSqlDatabase DBManager::database()
+{
+    return mainDB;
+}
 
-
-    //m_model->setHeaderData(0, Qt::Horizontal, itemValues[0].second);
-    //m_model->setHeaderData(1, Qt::Horizontal, itemValues[1].second);
-    //m_model->setHeaderData(2, Qt::Horizontal, itemValues[2].second);
-    //m_model->setHeaderData(3, Qt::Horizontal, itemValues[3].second);
-    //m_model->setHeaderData(4, Qt::Horizontal, itemValues[4].second);
-
-    //connect(m_model, &QSqlTableModel::dataChanged, this, &DBManager::setSumPrice);
-//}
+DBManager::DBManager(QObject *parent)
+    :QObject(parent)
+{
+}
 
 /**
  * @brief 创建数据库
@@ -64,6 +43,8 @@ namespace commands
  */
 bool DBManager::createDB()
 {
+    if (mainDB.isOpen())
+        return true;
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DBCONNECTIONNAME);
     db.setDatabaseName(DBNAME);
     db.setUserName("houhaotian");
@@ -89,7 +70,7 @@ bool DBManager::createDB()
 bool DBManager::createTable(QString createCommand)
 {
     QSqlQuery query(database());
-
+    query.clear();
     if (query.exec(createCommand))
     {
         if (query.exec(commands::selectAllSql))
@@ -98,26 +79,17 @@ bool DBManager::createTable(QString createCommand)
         }
     }
 
-    QString errorString("table InputStorage already exists Unable to execute statement");
-    if (query.lastError().text() == errorString)
+    QString errorString("table * already exists Unable to execute statement");
+    if (!query.lastError().text().contains( errorString, Qt::CaseSensitive))
     {
+        qDebug() << query.lastError();
         return true;
     }
 
+    qDebug() << query.lastError();
     return false;
 }
 
-QSqlDatabase DBManager::database()
-{
-    return mainDB;
-}
-
-DBManager::DBManager(QObject *parent)
-    :QObject(parent)
-{
-}
-
-QSqlDatabase DBManager::mainDB;
 
 //bool DBManager::insertTest(char *name, int age)
 //{

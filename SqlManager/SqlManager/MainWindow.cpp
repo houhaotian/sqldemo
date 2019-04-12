@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "InputTable.h"
+#include "DBTable.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -7,17 +7,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    inputTable = new InputTable(this);
+    m_outputTable = new DBTable(DBTable::output);
+    m_inputTable = new DBTable(DBTable::input);
 
-    ui->horizontalLayout->addWidget(inputTable);
-}
+    ui->tabWidget->addTab(m_inputTable, QStringLiteral("入库记录"));
+    ui->tabWidget->addTab(m_outputTable, QStringLiteral("出库记录"));
 
-void MainWindow::on_insertButton_clicked()
-{
-    inputTable->insertIndex();
-}
-
-void MainWindow::on_deleteButton_clicked()
-{
-    inputTable->removeIndex();
 }

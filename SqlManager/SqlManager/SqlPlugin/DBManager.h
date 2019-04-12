@@ -27,7 +27,7 @@ private slots:
      void setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottomRight);*/
 
 private:
-    Q_DISABLE_COPY(DBManager);
+    Q_DISABLE_COPY(DBManager)
     DBManager(QObject *parent = 0);
   
 private:

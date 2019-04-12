@@ -39,7 +39,7 @@
     <ClCompile Include="SqlPlugin\DBManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputTable\InputTable.cpp">
+    <ClCompile Include="InputTable\DBTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,7 +50,7 @@
     <QtMoc Include="SqlPlugin\DBManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="InputTable\InputTable.h">
+    <QtMoc Include="InputTable\DBTable.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -58,7 +58,7 @@
     <QtUic Include="MainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="InputTable\InputTable.ui">
+    <QtUic Include="InputTable\DBTable.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
