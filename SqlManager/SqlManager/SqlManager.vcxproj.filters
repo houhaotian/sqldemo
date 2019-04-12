@@ -28,6 +28,12 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Source Files\DBBase">
+      <UniqueIdentifier>{5fe9a81c-d11c-44ce-b9c0-cc20c9386f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DBBase">
+      <UniqueIdentifier>{9d257f2b-f956-44d9-96ed-a196e5b9b08b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,10 +42,16 @@
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SqlPlugin\DBManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DBTable\DBManager.cpp">
+      <Filter>Source Files\DBBase</Filter>
     </ClCompile>
-    <ClCompile Include="InputTable\DBTable.cpp">
+    <ClCompile Include="DBTable\DBTable.cpp">
+      <Filter>Source Files\DBBase</Filter>
+    </ClCompile>
+    <ClCompile Include="DBTable\InputTable.cpp">
+      <Filter>Source Files\DBBase</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,18 +59,27 @@
     <QtMoc Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="SqlPlugin\DBManager.h">
-      <Filter>Header Files</Filter>
+    <QtMoc Include="DBTable\DBManager.h">
+      <Filter>Header Files\DBBase</Filter>
     </QtMoc>
-    <QtMoc Include="InputTable\DBTable.h">
+    <QtMoc Include="DBTable\DBTable.h">
+      <Filter>Header Files\DBBase</Filter>
+    </QtMoc>
+    <QtMoc Include="DBTable\InputTable.h">
+      <Filter>Header Files\DBBase</Filter>
+    </QtMoc>
+    <QtMoc Include="OutputTable.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="MainWindow.ui">
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="DBTable\DBTable.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="InputTable\DBTable.ui">
+    <QtUic Include="MainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -66,8 +87,5 @@
     <QtRcc Include="MainWindow.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

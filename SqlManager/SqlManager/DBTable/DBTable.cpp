@@ -15,7 +15,7 @@
 #include "DBTable.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include "SqlPlugin/DBManager.h"
+#include "DBManager.h"
 #include <QMessageBox>
 #include <QSqlTableModel>
 #include <QTableView>
@@ -73,33 +73,33 @@ DBTable::~DBTable()
 {
 }
 
-bool DBTable::createTable(TableType m_type)
+bool DBTable::createTable(TableType type)
 {
-    QString createSQL, m_tableName;
-    if (m_type == TableType::input) {
+    QString createSQL, tableName;
+    if (type == TableType::input) {
         COMMANDS::itemValues[2].second = "入库单价";
-        m_tableName = INPUTTABLENAME;
+        tableName = INPUTTABLENAME;
     }
-    else if (m_type == TableType::output) {
+    else if (type == TableType::output) {
         COMMANDS::itemValues[2].second = "出库单价";
-        m_tableName = OUTPUTTABLENAME;
+        tableName = OUTPUTTABLENAME;
     }
     else {
         return false;
     }
 
-    createSQL = COMMANDS::constructCreateSQL(m_tableName);
+    createSQL = COMMANDS::constructCreateSQL(tableName);
 
     if (!DBManager::createTable(createSQL))
     {
         QMessageBox::warning(this, "warning", "表创建失败！");
-        return;
+        return false;
     }
 
     QSqlDatabase db = DBManager::database();
 
     m_model = new QSqlTableModel(this, db);
-    m_model->setTable(m_tableName);
+    m_model->setTable(tableName);
     m_model->select();
     m_tableView = ui->tableView;
     m_tableView->setModel(m_model);
@@ -127,4 +127,14 @@ bool DBTable::removeIndex()
     m_model->removeRow(currentIndex.row());
     m_model->select();
     return true;
+}
+
+void DBTable::on_insertButton_clicked()
+{
+    insertIndex();
+}
+
+void DBTable::on_deleteButton_clicked()
+{
+    removeIndex();
 }

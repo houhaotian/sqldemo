@@ -1,5 +1,6 @@
 #include "MainWindow.h"
-#include "DBTable.h"
+#include "InputTable.h"
+#include "OutputTable.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -7,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_outputTable = new DBTable();
-    m_inputTable = new DBTable();
+    m_outputTable = new InputTable();
+    m_inputTable = new OutputTable();
 
     ui->tabWidget->addTab(m_inputTable, QStringLiteral("入库记录"));
     ui->tabWidget->addTab(m_outputTable, QStringLiteral("出库记录"));
