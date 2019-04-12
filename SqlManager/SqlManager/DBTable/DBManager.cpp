@@ -151,29 +151,3 @@ bool DBManager::createTable(QString createCommand)
 //
 //    QMessageBox::information(this, "warning", info);
 //}
-//
-//void DBManager::setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottomRight)
-//{
-//   // Q_ASSERT_X(topLeft == bottomRight, "SUM_PRICE！", "do not change SUM_PRICE");
-//    float costValue, itemCount;
-//
-//    if (topLeft.column() == 2)
-//    {
-//        costValue = topLeft.data().toFloat();
-//        itemCount = topLeft.sibling(topLeft.row(), topLeft.column() + 1).data().toInt();
-//    }
-//    else if (topLeft.column() == 3)
-//    {
-//        costValue = topLeft.sibling(topLeft.row(), topLeft.column() - 1).data().toFloat();
-//        itemCount = topLeft.data().toInt();
-//    }
-//    else
-//    {
-//        return;
-//    }
-//
-//    float sumValue = costValue * itemCount;
-//    QModelIndex sumIndex = topLeft.sibling(topLeft.row(), ui->tableView->model()->columnCount() - 1);
-//
-//    m_model->setData(sumIndex, sumValue);
-//}

@@ -38,11 +38,12 @@ namespace COMMANDS
         {"count", "商品数量"},
         {"sumPrice", "总价"},
         {"note", "备注"},
-        {"dateTime", "日期"}
+        {"dateTime", "日期"},
+        {"menuNumber","所属单号"}
     };
 
     QString createTable = QString("create table %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        %2 int, %3 varchar(30), %4 REAL, %5 int, %6 REAL, %7 TEXT, %8 DATETIME)");
+        %2 int, %3 varchar(30), %4 REAL, %5 int, %6 REAL, %7 TEXT, %8 DATETIME, %9 TEXT)");
 
     QString constructCreateSQL(const QString &TableName) {
         QString createSQL = QString(createTable).arg(TableName);
@@ -66,7 +67,6 @@ DBTable::DBTable(QWidget *parent)
         return;
     }
 
-    //connect(m_model, &QSqlTableModel::dataChanged, this, &DBManager::setSumPrice);
 }
 
 DBTable::~DBTable()
@@ -75,20 +75,20 @@ DBTable::~DBTable()
 
 bool DBTable::createTable(TableType type)
 {
-    QString createSQL, tableName;
+    QString createSQL;
     if (type == TableType::input) {
         COMMANDS::itemValues[2].second = "入库单价";
-        tableName = INPUTTABLENAME;
+        setTableName(INPUTTABLENAME);
     }
     else if (type == TableType::output) {
         COMMANDS::itemValues[2].second = "出库单价";
-        tableName = OUTPUTTABLENAME;
+        setTableName(OUTPUTTABLENAME);
     }
     else {
         return false;
     }
 
-    createSQL = COMMANDS::constructCreateSQL(tableName);
+    createSQL = COMMANDS::constructCreateSQL(tableName());
 
     if (!DBManager::createTable(createSQL))
     {
@@ -99,7 +99,7 @@ bool DBTable::createTable(TableType type)
     QSqlDatabase db = DBManager::database();
 
     m_model = new QSqlTableModel(this, db);
-    m_model->setTable(tableName);
+    m_model->setTable(tableName());
     m_model->select();
     m_tableView = ui->tableView;
     m_tableView->setModel(m_model);
@@ -108,6 +108,8 @@ bool DBTable::createTable(TableType type)
     for (int i = 0; i < COMMANDS::itemValues.size(); i++) {
         m_model->setHeaderData(i + 1, Qt::Horizontal, COMMANDS::itemValues[i].second);
     }
+    connect(m_model, &QSqlTableModel::dataChanged, this, &DBTable::setSumPrice);
+
     return true;
 }
 
@@ -137,4 +139,56 @@ void DBTable::on_insertButton_clicked()
 void DBTable::on_deleteButton_clicked()
 {
     removeIndex();
+}
+
+void DBTable::setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+//    Q_ASSERT_X(topLeft == bottomRight, "SUM_PRICE！", "do not change SUM_PRICE");
+    float costPrice, itemCount;
+
+    if (topLeft.column() == 3) {
+        costPrice = topLeft.data().toFloat();
+        itemCount = topLeft.sibling(topLeft.row(), topLeft.column() + 1).data().toInt();
+    }
+    else if (topLeft.column() == 4) {
+        costPrice = topLeft.sibling(topLeft.row(), topLeft.column() - 1).data().toFloat();
+        itemCount = topLeft.data().toInt();
+    }
+    else {
+        return;
+    }
+
+    float sumValue = costPrice * itemCount;
+    QModelIndex sumIndex = topLeft.sibling(topLeft.row(), 5);
+
+    m_model->setData(sumIndex, sumValue);
+}
+
+void DBTable::testFoo()
+{
+    QString command1 = QString("SELECT * FROM %1 ORDER BY %2 ASC").arg(INPUTTABLENAME, COMMANDS::itemValues[0].first);
+    QString command2 = QString("SELECT * FROM %1 ORDER BY %2 ASC").arg(OUTPUTTABLENAME, COMMANDS::itemValues[0].first);
+
+    QSqlQuery query(DBManager::database());
+    query.exec(command1);
+
+    int count;
+    float costPrice, sumPrice;
+
+    while (query.next())
+    {
+       static int itemID = query.value(1).toInt();
+       if (itemID != query.value(1).toInt())
+       {
+           costPrice = 0;
+           count = 0;
+           sumPrice = 0;
+       }
+
+        costPrice += query.value(3).toFloat();
+        count += query.value(4).toInt();
+        sumPrice += query.value(5).toFloat();
+    }
+
+    query.exec(command2);
 }
