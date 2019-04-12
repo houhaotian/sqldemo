@@ -45,6 +45,7 @@ bool DBManager::createDB()
 {
     if (mainDB.isOpen())
         return true;
+
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DBCONNECTIONNAME);
     db.setDatabaseName(DBNAME);
     db.setUserName("houhaotian");

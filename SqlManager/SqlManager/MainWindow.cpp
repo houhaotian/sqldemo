@@ -7,8 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_outputTable = new DBTable(DBTable::output);
-    m_inputTable = new DBTable(DBTable::input);
+    m_outputTable = new DBTable();
+    m_inputTable = new DBTable();
 
     ui->tabWidget->addTab(m_inputTable, QStringLiteral("入库记录"));
     ui->tabWidget->addTab(m_outputTable, QStringLiteral("出库记录"));

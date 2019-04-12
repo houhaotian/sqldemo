@@ -1,4 +1,18 @@
-﻿#include "DBTable.h"
+﻿/**************************************************************************************************************************
+**		
+**	Copyright:houhaotian
+**	
+**	file DBTable.cpp
+**	
+**	Author: Houhaotian
+**	
+**	Date: 2019/04/12
+**
+**	Description:作为table的工厂类。可以new入库，出库table。随new随用。
+**              里面封装了tableView和SqlModel
+**
+**************************************************************************************************************************/
+#include "DBTable.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "SqlPlugin/DBManager.h"
@@ -40,9 +54,8 @@ namespace COMMANDS
     }
 };
 
-DBTable::DBTable(TableType type, QWidget *parent)
-    : m_type(type)
-    , QWidget(parent)
+DBTable::DBTable(QWidget *parent)
+    : QWidget(parent)
     , ui(new Ui::DBTable)
 {
     ui->setupUi(this);
@@ -53,15 +66,28 @@ DBTable::DBTable(TableType type, QWidget *parent)
         return;
     }
 
-    QString createSQL;
+    //connect(m_model, &QSqlTableModel::dataChanged, this, &DBManager::setSumPrice);
+}
+
+DBTable::~DBTable()
+{
+}
+
+bool DBTable::createTable(TableType m_type)
+{
+    QString createSQL, m_tableName;
     if (m_type == TableType::input) {
         COMMANDS::itemValues[2].second = "入库单价";
         m_tableName = INPUTTABLENAME;
     }
-    else {
+    else if (m_type == TableType::output) {
         COMMANDS::itemValues[2].second = "出库单价";
         m_tableName = OUTPUTTABLENAME;
     }
+    else {
+        return false;
+    }
+
     createSQL = COMMANDS::constructCreateSQL(m_tableName);
 
     if (!DBManager::createTable(createSQL))
@@ -78,17 +104,11 @@ DBTable::DBTable(TableType type, QWidget *parent)
     m_tableView = ui->tableView;
     m_tableView->setModel(m_model);
 
-
     m_tableView->hideColumn(0);
     for (int i = 0; i < COMMANDS::itemValues.size(); i++) {
         m_model->setHeaderData(i + 1, Qt::Horizontal, COMMANDS::itemValues[i].second);
     }
-
-    //connect(m_model, &QSqlTableModel::dataChanged, this, &DBManager::setSumPrice);
-}
-
-DBTable::~DBTable()
-{
+    return true;
 }
 
 bool DBTable::insertIndex()
@@ -107,14 +127,4 @@ bool DBTable::removeIndex()
     m_model->removeRow(currentIndex.row());
     m_model->select();
     return true;
-}
-
-void DBTable::on_insertButton_clicked()
-{
-    insertIndex();
-}
-
-void DBTable::on_deleteButton_clicked()
-{
-    removeIndex();
 }
