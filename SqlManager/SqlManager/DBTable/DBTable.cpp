@@ -17,43 +17,16 @@
 #include <QSqlQuery>
 #include "DBManager.h"
 #include <QMessageBox>
-#include <QSqlTableModel>
 #include <QTableView>
 #include <QSqlRecord>
 #include <QDateTime>
 
 #include <QDebug>
 
-#define INPUTTABLENAME "InputStorage"
-#define OUTPUTTABLENAME "OutputStorage"
+#define INPUTMENU "inputMenu"
+#define OUTPUTMENU "outputMenu"
+
 #pragma execution_character_set("utf-8")
-
-
-namespace COMMANDS
-{
-    QList<QPair<QString, QString>> itemValues = {
-        {"itemId", "商品号"},
-        {"name", "商品名"},
-        {"costPrice", "入库单价"},
-        {"count", "商品数量"},
-        {"sumPrice", "总价"},
-        {"note", "备注"},
-        {"dateTime", "日期"},
-        {"menuNumber","所属单号"}
-    };
-
-    QString createTable = QString("create table %1 (id INTEGER PRIMARY KEY AUTOINCREMENT, \
-        %2 int, %3 varchar(30), %4 REAL, %5 int, %6 REAL, %7 TEXT, %8 DATETIME, %9 TEXT)");
-
-    QString constructCreateSQL(const QString &TableName) {
-        QString createSQL = QString(createTable).arg(TableName);
-
-        for (int i = 0; i < itemValues.size(); i++) {
-            createSQL = QString(createSQL).arg(itemValues[i].first);
-        }
-        return createSQL;
-    }
-};
 
 DBTable::DBTable(QWidget *parent)
     : QWidget(parent)
@@ -73,23 +46,8 @@ DBTable::~DBTable()
 {
 }
 
-bool DBTable::createTable(TableType type)
+bool DBTable::createTable(QString createSQL)
 {
-    QString createSQL;
-    if (type == TableType::input) {
-        COMMANDS::itemValues[2].second = "入库单价";
-        setTableName(INPUTTABLENAME);
-    }
-    else if (type == TableType::output) {
-        COMMANDS::itemValues[2].second = "出库单价";
-        setTableName(OUTPUTTABLENAME);
-    }
-    else {
-        return false;
-    }
-
-    createSQL = COMMANDS::constructCreateSQL(tableName());
-
     if (!DBManager::createTable(createSQL))
     {
         QMessageBox::warning(this, "warning", "表创建失败！");
@@ -98,36 +56,32 @@ bool DBTable::createTable(TableType type)
 
     QSqlDatabase db = DBManager::database();
 
-    m_model = new QSqlTableModel(this, db);
-    m_model->setTable(tableName());
-    m_model->select();
+    setModel(new QSqlTableModel(this, db));
+    model()->setTable(tableName());
+    model()->select();
     m_tableView = ui->tableView;
-    m_tableView->setModel(m_model);
+    m_tableView->setModel(model());
 
     m_tableView->hideColumn(0);
-    for (int i = 0; i < COMMANDS::itemValues.size(); i++) {
-        m_model->setHeaderData(i + 1, Qt::Horizontal, COMMANDS::itemValues[i].second);
-    }
-    connect(m_model, &QSqlTableModel::dataChanged, this, &DBTable::setSumPrice);
-
+    
     return true;
 }
 
 bool DBTable::insertIndex()
 {
-    auto record = m_model->record();
-    int rowCount = m_model->rowCount();
-    record.setValue(0, rowCount + 1);
+    auto record = model()->record();
+    int rowCount = model()->rowCount();
+    //record.setValue(0, rowCount + 1);
     record.setValue(7, QDateTime::currentDateTime().toString(QString("yyyy/M/d H:mm:ss")));
 
-    return m_model->insertRecord(rowCount, record);
+    return model()->insertRecord(rowCount, record);
 }
 
 bool DBTable::removeIndex()
 {
     QModelIndex currentIndex = m_tableView->currentIndex();
-    m_model->removeRow(currentIndex.row());
-    m_model->select();
+    model()->removeRow(currentIndex.row());
+    model()->select();
     return true;
 }
 
@@ -141,32 +95,10 @@ void DBTable::on_deleteButton_clicked()
     removeIndex();
 }
 
-void DBTable::setSumPrice(const QModelIndex &topLeft, const QModelIndex &bottomRight)
-{
-//    Q_ASSERT_X(topLeft == bottomRight, "SUM_PRICE！", "do not change SUM_PRICE");
-    float costPrice, itemCount;
-
-    if (topLeft.column() == 3) {
-        costPrice = topLeft.data().toFloat();
-        itemCount = topLeft.sibling(topLeft.row(), topLeft.column() + 1).data().toInt();
-    }
-    else if (topLeft.column() == 4) {
-        costPrice = topLeft.sibling(topLeft.row(), topLeft.column() - 1).data().toFloat();
-        itemCount = topLeft.data().toInt();
-    }
-    else {
-        return;
-    }
-
-    float sumValue = costPrice * itemCount;
-    QModelIndex sumIndex = topLeft.sibling(topLeft.row(), 5);
-
-    m_model->setData(sumIndex, sumValue);
-}
 
 void DBTable::testFoo()
 {
-    QString command1 = QString("SELECT * FROM %1 ORDER BY %2 ASC").arg(INPUTTABLENAME, COMMANDS::itemValues[0].first);
+  /*  QString command1 = QString("SELECT * FROM %1 ORDER BY %2 ASC").arg(INPUTTABLENAME, COMMANDS::itemValues[0].first);
     QString command2 = QString("SELECT * FROM %1 ORDER BY %2 ASC").arg(OUTPUTTABLENAME, COMMANDS::itemValues[0].first);
 
     QSqlQuery query(DBManager::database());
@@ -190,5 +122,5 @@ void DBTable::testFoo()
         sumPrice += query.value(5).toFloat();
     }
 
-    query.exec(command2);
+    query.exec(command2);*/
 }
