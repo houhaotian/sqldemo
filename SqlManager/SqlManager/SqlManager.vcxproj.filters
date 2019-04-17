@@ -48,10 +48,13 @@
     <ClCompile Include="DBTable\DBTable.cpp">
       <Filter>Source Files\DBBase</Filter>
     </ClCompile>
-    <ClCompile Include="DBTable\InputTable.cpp">
-      <Filter>Source Files\DBBase</Filter>
-    </ClCompile>
     <ClCompile Include="OutputTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DBTable\InputTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,10 +68,10 @@
     <QtMoc Include="DBTable\DBTable.h">
       <Filter>Header Files\DBBase</Filter>
     </QtMoc>
-    <QtMoc Include="DBTable\InputTable.h">
-      <Filter>Header Files\DBBase</Filter>
-    </QtMoc>
     <QtMoc Include="OutputTable.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DBTable\InputTable.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -87,5 +90,10 @@
     <QtRcc Include="MainWindow.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="InputMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

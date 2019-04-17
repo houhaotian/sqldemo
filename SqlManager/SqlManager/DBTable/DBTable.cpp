@@ -1,6 +1,6 @@
-﻿/**************************************************************************************************************************
+﻿/****************************************************************************
 **		
-**	Copyright:houhaotian
+**	Copyright:Mine
 **	
 **	file DBTable.cpp
 **	
@@ -11,7 +11,8 @@
 **	Description:作为table的工厂类。可以new入库，出库table。随new随用。
 **              里面封装了tableView和SqlModel
 **
-**************************************************************************************************************************/
+****************************************************************************/
+
 #include "DBTable.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -74,15 +75,15 @@ bool DBTable::insertIndex()
     //record.setValue(0, rowCount + 1);
     record.setValue(7, QDateTime::currentDateTime().toString(QString("yyyy/M/d H:mm:ss")));
 
-    return model()->insertRecord(rowCount, record);
+     model()->insertRecord(rowCount, record);
+     return model()->select();
 }
 
 bool DBTable::removeIndex()
 {
     QModelIndex currentIndex = m_tableView->currentIndex();
     model()->removeRow(currentIndex.row());
-    model()->select();
-    return true;
+    return model()->select();
 }
 
 void DBTable::on_insertButton_clicked()

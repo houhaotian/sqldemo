@@ -116,6 +116,7 @@
     <ClCompile Include="DBTable\DBManager.cpp" />
     <ClCompile Include="DBTable\DBTable.cpp" />
     <ClCompile Include="DBTable\InputTable.cpp" />
+    <ClCompile Include="InputMenu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="OutputTable.cpp" />
@@ -156,6 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="MainWindow.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="InputMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

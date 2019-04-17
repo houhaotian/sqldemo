@@ -1,4 +1,18 @@
-﻿#pragma once
+﻿/**************************************************************************************************************************
+**		
+**	Copyright:Mine
+**	
+**	file DBTable.h
+**	
+**	Author: Houhaotian
+**	
+**	Date: 2019/04/17
+**
+**	Description:作为table的工厂类。可以new入库，出库table。随new随用。
+**              里面封装了tableView和SqlModel
+**
+**************************************************************************************************************************/
+#pragma once
 
 #include <QWidget>
 #include <QSqlTableModel>
@@ -15,7 +29,7 @@ class DBTable : public QWidget
     Q_PROPERTY(QString tableName READ tableName WRITE setTableName)
 
 public:
-    DBTable(QWidget *parent = Q_NULLPTR);
+    explicit DBTable(QWidget *parent = Q_NULLPTR);
     virtual ~DBTable();
 
     bool createTable(QString createSQL);
@@ -27,11 +41,11 @@ public:
 
 public slots:
     void testFoo();
+    virtual bool insertIndex();
 
 private slots :
     void on_insertButton_clicked();
     void on_deleteButton_clicked();
-    bool insertIndex();
     bool removeIndex();
 
 
