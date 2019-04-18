@@ -33,12 +33,10 @@ public:
     virtual ~DBTable();
 
     bool createTable(QString createSQL);
+    QSqlTableModel * model() const { return m_model; }
 
     const QString &tableName() const { return m_tableName; }
     void setTableName(QString val) { m_tableName = val; }
-
-   QSqlTableModel * model() const { return m_model; }
-
 
 public slots:
     void testFoo();
@@ -50,7 +48,6 @@ private slots :
     bool removeIndex();
     void showContextMenu(const QPoint &pos);
     virtual void contextMenuRequested(QModelIndex) {}
-
 
 private:
     void setModel(QSqlTableModel *model) { m_model = model; }

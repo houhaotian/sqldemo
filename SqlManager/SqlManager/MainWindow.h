@@ -4,6 +4,7 @@
 #include "ui_MainWindow.h"
 
 class DBTable;
+class InputMenu;
 
 class MainWindow : public QMainWindow
 {
@@ -19,4 +20,5 @@ private:
     Ui::MainWindow *ui;
 
     DBTable *m_inputTable, *m_outputTable;
+    InputMenu *m_inputMenu;
 };
