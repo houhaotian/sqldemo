@@ -2,6 +2,9 @@
 #include "InputTable.h"
 #include "OutputTable.h"
 #include "InputMenu.h"
+#include <QDateTime>
+#include <QDebug>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

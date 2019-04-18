@@ -39,6 +39,7 @@ public:
 
    QSqlTableModel * model() const { return m_model; }
 
+
 public slots:
     void testFoo();
     virtual bool insertIndex();
@@ -47,6 +48,8 @@ private slots :
     void on_insertButton_clicked();
     void on_deleteButton_clicked();
     bool removeIndex();
+    void showContextMenu(const QPoint &pos);
+    virtual void contextMenuRequested(QModelIndex) {}
 
 
 private:

@@ -65,6 +65,8 @@ bool DBTable::createTable(QString createSQL)
 
     m_tableView->hideColumn(0);
     
+    connect(m_tableView, &QTableView::customContextMenuRequested, this, &DBTable::showContextMenu);
+
     return true;
 }
 
@@ -84,6 +86,15 @@ bool DBTable::removeIndex()
     QModelIndex currentIndex = m_tableView->currentIndex();
     model()->removeRow(currentIndex.row());
     return model()->select();
+}
+
+void DBTable::showContextMenu(const QPoint &pos)
+{
+    QModelIndex index = m_tableView->indexAt(pos);
+    if (index.row() < 0)
+        return;
+    else
+        contextMenuRequested(index);
 }
 
 void DBTable::on_insertButton_clicked()

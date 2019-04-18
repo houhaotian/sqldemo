@@ -74,6 +74,9 @@
     <QtMoc Include="DBTable\InputTable.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="InputMenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -90,10 +93,5 @@
     <QtRcc Include="MainWindow.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="InputMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
