@@ -64,7 +64,8 @@ bool DBTable::createTable(QString createSQL)
     m_tableView->setModel(model());
 
     m_tableView->hideColumn(0);
-    
+    m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     connect(m_tableView, &QTableView::customContextMenuRequested, this, &DBTable::showContextMenu);
 
     return true;
