@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_inputMenu, &InputMenu::editInputMenu, [this] {
         ui->tabWidget->setCurrentIndex(3);
     });
+
 }
 
 void MainWindow::on_pushButton_clicked()

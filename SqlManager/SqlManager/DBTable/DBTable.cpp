@@ -108,6 +108,12 @@ void DBTable::on_deleteButton_clicked()
 }
 
 
+void DBTable::on_resetButton_clicked()
+{
+    model()->setFilter(QString(""));
+    model()->select();
+}
+
 void DBTable::testFoo()
 {
   /*  QString command1 = QString("SELECT * FROM %1 ORDER BY %2 ASC").arg(INPUTTABLENAME, COMMANDS::itemValues[0].first);
