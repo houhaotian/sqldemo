@@ -19,7 +19,7 @@
 #include <QSqlError>
 #include <QString>
 #include <QSqlRecord>
-
+#include <QCoreApplication>
 
 #define DBCONNECTIONNAME "localSQL"
 #define DBNAME "Storage"
@@ -60,7 +60,10 @@ bool DBManager::createDB()
         return true;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DBCONNECTIONNAME);
-    db.setDatabaseName(DBNAME);
+    qDebug() << qApp->applicationDirPath();
+    db.setDatabaseName(qApp->applicationDirPath() + "/" + DBNAME);
+    //  ":memory:"这个是存在堆中的数据库。
+    //  db.setDatabaseName(":memory:");
     db.setUserName("houhaotian");
     db.setPassword("123456");
     db.setHostName("127.0.0.1");

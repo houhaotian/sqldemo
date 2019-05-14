@@ -2,8 +2,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_MainWindow.h"
+#include "DBTable.h"
 
-class DBTable;
 class InputMenu;
 
 class MainWindow : public QMainWindow
@@ -19,6 +19,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    DBTable *m_inputTable, *m_outputTable;
+    QScopedPointer<DBTable> m_inputTable, m_outputTable;
     InputMenu *m_inputMenu;
 };
